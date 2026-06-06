@@ -1,0 +1,8 @@
+node_modules/
+.npm-cache/
+server/data/
+.superpowers/
+dist/
+.DS_Store
+*.log
+.env

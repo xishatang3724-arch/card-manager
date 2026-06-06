@@ -1,0 +1,7 @@
+node_modules
+.git
+.npm-cache
+.superpowers
+docs
+*.md
+.DS_Store
