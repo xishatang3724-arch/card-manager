@@ -34,8 +34,13 @@ await fastify.register(staticFiles, {
 });
 
 // Serve frontend static files in production
-const clientDistDir = path.resolve(process.cwd(), '..', 'client', 'dist');
-if (fs.existsSync(clientDistDir)) {
+const clientDistCandidates = [
+  path.resolve(process.cwd(), 'client', 'dist'),       // Docker (/app/client/dist)
+  path.resolve(process.cwd(), '..', 'client', 'dist'), // Local dev (server/src -> ../client/dist)
+];
+const clientDistDir = clientDistCandidates.find(d => fs.existsSync(d));
+
+if (clientDistDir) {
   await fastify.register(staticFiles, {
     root: clientDistDir,
     prefix: '/',
