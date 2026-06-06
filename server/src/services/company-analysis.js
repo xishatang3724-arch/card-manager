@@ -2,10 +2,14 @@ import Anthropic from '@anthropic-ai/sdk';
 
 let _client;
 
+function getApiKey() {
+  return process.env.KIMI_API_KEY || process.env.bibilabu || '';
+}
+
 function getClient() {
   if (!_client) {
     _client = new Anthropic({
-      apiKey: process.env.KIMI_API_KEY,
+      apiKey: getApiKey(),
       baseURL: 'https://api.kimi.com/coding',
     });
   }
