@@ -41,16 +41,21 @@ const clientDistCandidates = [
 const clientDistDir = clientDistCandidates.find(d => fs.existsSync(d));
 
 if (clientDistDir) {
+  const indexHtml = path.join(clientDistDir, 'index.html');
+
+  // Serve static files (exact paths only)
   await fastify.register(staticFiles, {
     root: clientDistDir,
     prefix: '/',
     decorateReply: false,
     wildcard: false,
   });
-  // SPA fallback: all non-API routes serve index.html
+
+  // SPA fallback: for all GET requests that are not API/uploads, serve index.html
   fastify.setNotFoundHandler((req, reply) => {
-    if (!req.url.startsWith('/api/') && !req.url.startsWith('/uploads/')) {
-      return reply.sendFile('index.html');
+    if (req.method === 'GET' && !req.url.startsWith('/api/') && !req.url.startsWith('/uploads/')) {
+      reply.type('text/html').send(fs.readFileSync(indexHtml, 'utf-8'));
+      return;
     }
     reply.status(404).send({ error: { message: 'Not found' } });
   });
